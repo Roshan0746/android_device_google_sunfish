@@ -20,9 +20,6 @@
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/generic_system.mk)
 
-# Enable mainline checking
-PRODUCT_ENFORCE_ARTIFACT_PATH_REQUIREMENTS := strict
-
 #
 # All components inherited here go to system_ext image
 #
@@ -58,8 +55,25 @@ PRODUCT_BUILD_SUPER_PARTITION := false
 # STOPSHIP deal with Qualcomm stuff later
 # PRODUCT_RESTRICT_VENDOR_FILES := all
 
+# Inherit some common aosp stuff.
+$(call inherit-product, vendor/aosp/config/common_full_phone.mk)
+
+include device/google/sunfish/device-aosp.mk
+
 PRODUCT_MANUFACTURER := Google
-PRODUCT_BRAND := Android
+PRODUCT_BRAND := google
 PRODUCT_NAME := aosp_sunfish
 PRODUCT_DEVICE := sunfish
-PRODUCT_MODEL := AOSP on sunfish
+PRODUCT_MODEL := Pixel 4a
+
+# Boot animation
+TARGET_SCREEN_HEIGHT := 2340
+TARGET_SCREEN_WIDTH := 1080
+TARGET_BOOT_ANIMATION_RES := 1080
+
+PRODUCT_BUILD_PROP_OVERRIDES += \
+    BuildDesc="sunfish-user 13 TQ3A.230805.001.S1 10786265 release-keys" \
+    BuildFingerprint=google/sunfish/sunfish:13/TQ3A.230805.001.S1/10786265:user/release-keys \
+    DeviceProduct=sunfish
+
+$(call inherit-product, vendor/google/sunfish/sunfish-vendor.mk)

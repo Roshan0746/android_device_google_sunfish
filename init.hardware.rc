@@ -79,15 +79,20 @@ on init && property:vendor.skip.init=0
     write /sys/devices/system/cpu/cpu6/online 1
     write /sys/devices/system/cpu/cpu7/online 1
 
-    # configure governor settings for little cluster
+    # configure governor settings
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor schedutil
-    write /sys/devices/system/cpu/cpu0/cpufreq/schedutil/up_rate_limit_us 500
+    write /sys/devices/system/cpu/cpu0/cpufreq/schedutil/up_rate_limit_us 300
     write /sys/devices/system/cpu/cpu0/cpufreq/schedutil/down_rate_limit_us 20000
 
     # configure governor settings for big cluster
     write /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor schedutil
-    write /sys/devices/system/cpu/cpu6/cpufreq/schedutil/up_rate_limit_us 500
+    write /sys/devices/system/cpu/cpu6/cpufreq/schedutil/up_rate_limit_us 300
     write /sys/devices/system/cpu/cpu6/cpufreq/schedutil/down_rate_limit_us 20000
+
+    # configure governor settings for big big CPU
+    write /sys/devices/system/cpu/cpu7/cpufreq/scaling_governor schedutil
+    write /sys/devices/system/cpu/cpu7/cpufreq/schedutil/up_rate_limit_us 300
+    write /sys/devices/system/cpu/cpu7/cpufreq/schedutil/down_rate_limit_us 20000
 
     # ZRAM setup
     write /sys/block/zram0/comp_algorithm lz4
@@ -96,14 +101,15 @@ on init && property:vendor.skip.init=0
     # Some user code relies on ro.boot.hardware.revision
     setprop ro.boot.hardware.revision ${ro.revision}
 
-    # set default schedTune value for foreground/top-app
-    write /dev/stune/foreground/schedtune.prefer_idle 1
-    write /dev/stune/top-app/schedtune.boost 10
-    write /dev/stune/top-app/schedtune.prefer_idle 1
-
-    # set default schedTune value for camera-daemon
+    # set default schedTune value for foreground/top-app/camera-daemon
     write /dev/stune/camera-daemon/schedtune.prefer_idle 1
     write /dev/stune/camera-daemon/schedtune.boost 0
+    write /dev/stune/foreground/schedtune.prefer_idle 1
+    write /dev/stune/foreground/schedtune.boost 0
+    write /dev/stune/schedtune.prefer_idle 0
+    write /dev/stune/schedtune.boost 0
+    write /dev/stune/top-app/schedtune.prefer_idle 1
+    write /dev/stune/top-app/schedtune.boost 1
 
     # Allow PAI targeting per hardware SKU
     setprop ro.oem.key1 ${ro.boot.hardware.sku}
@@ -220,11 +226,11 @@ on late-fs
     write /sys/module/kdebuginfo/parameters/build_info "${ro.product.name}-${ro.build.type} ${ro.build.version.incremental}"
 
 on post-fs-data
-    mkdir /vendor/data/tombstones 0771 system system
-    mkdir /tombstones/modem 0771 system system
-    mkdir /tombstones/lpass 0771 system system
-    mkdir /tombstones/wcnss 0771 system system
-    mkdir /tombstones/dsps 0771 system system
+    mkdir /vendor/data/tombstones 0000 system system
+    mkdir /tombstones/modem 0000 system system
+    mkdir /tombstones/lpass 0000 system system
+    mkdir /tombstones/wcnss 0000 system system
+    mkdir /tombstones/dsps 0000 system system
     mkdir /data/vendor/hbtp 0750 system system
     mkdir /data/vendor/tloc 0700 system drmrpc
     mkdir /data/vendor/nnhal 0700 system system
@@ -440,20 +446,66 @@ on property:sys.boot_completed=1
     chown system system /dev/sys/fs/by-name/userdata/gc_segment_mode
     chown system system /dev/sys/fs/by-name/userdata/gc_reclaimed_segments
 
-    # Back to default VM settings
-    write /proc/sys/vm/dirty_expire_centisecs 3000
-    write /proc/sys/vm/dirty_background_ratio 10
+    # Runtime fs tuning
+    write /sys/block/sda/queue/nr_requests 128
+    write /sys/block/sda/queue/iostats 0
+    write /sys/block/sda/queue/nomerges 2
+    write /sys/block/sda/queue/scheduler cfq
+    write /sys/block/sda/queue/iosched/slice_idle 0
+    write /sys/block/sda/queue/read_ahead_kb 256
+    write /sys/block/sdb/queue/nr_requests 128
+    write /sys/block/sdb/queue/iostats 0
+    write /sys/block/sdb/queue/nomerges 2
+    write /sys/block/sdb/queue/scheduler cfq
+    write /sys/block/sdb/queue/iosched/slice_idle 0
+    write /sys/block/sdb/queue/read_ahead_kb 256
+    write /sys/block/sdc/queue/nr_requests 128
+    write /sys/block/sdc/queue/iostats 0
+    write /sys/block/sdc/queue/nomerges 2
+    write /sys/block/sdc/queue/scheduler cfq
+    write /sys/block/sdc/queue/iosched/slice_idle 0
+    write /sys/block/sdc/queue/read_ahead_kb 256
+    write /sys/block/sdd/queue/nr_requests 128
+    write /sys/block/sdd/queue/iostats 0
+    write /sys/block/sdd/queue/nomerges 2
+    write /sys/block/sdd/queue/scheduler cfq
+    write /sys/block/sdd/queue/iosched/slice_idle 0
+    write /sys/block/sdd/queue/read_ahead_kb 256
+    write /sys/block/sde/queue/nr_requests 128
+    write /sys/block/sde/queue/iostats 0
+    write /sys/block/sde/queue/nomerges 2
+    write /sys/block/sde/queue/scheduler cfq
+    write /sys/block/sde/queue/iosched/slice_idle 0
+    write /sys/block/sde/queue/read_ahead_kb 256
+    write /sys/block/sdf/queue/nr_requests 128
+    write /sys/block/sdf/queue/iostats 0
+    write /sys/block/sdf/queue/nomerges 2
+    write /sys/block/sdf/queue/scheduler cfq
+    write /sys/block/sdf/queue/iosched/slice_idle 0
+    write /sys/block/sdf/queue/read_ahead_kb 256
+
+    # ZRAM Tweaks
+    write /proc/sys/vm/dirty_background_ratio 100
+    write /proc/sys/vm/dirty_expire_centisecs 6000
+    write /proc/sys/vm/dirty_ratio 100
+    write /proc/sys/vm/dirty_writeback_centisecs 6000
+    write /proc/sys/vm/drop_caches 6
+    write /proc/sys/vm/stat_interval 10
+    write /proc/sys/vm/swappiness 100
+    write /proc/sys/vm/swap_ratio_enable 1
+    write /proc/sys/vm/swap_ratio 100
+    write /proc/sys/vm/vfs_cache_pressure 100
 
     # Enable ZRAM on boot_complete
     swapon_all /vendor/etc/fstab.${ro.boot.hardware.platform}
-    write /proc/sys/vm/swappiness 100
+    write /proc/sys/vm/swappiness 70
 
     # Setup runtime cpusets
     write /dev/cpuset/top-app/cpus 0-7
-    write /dev/cpuset/foreground/cpus 0-5,7
-    write /dev/cpuset/background/cpus 4-5
-    write /dev/cpuset/system-background/cpus 2-5
-    write /dev/cpuset/restricted/cpus 2-5
+    write /dev/cpuset/foreground/cpus 0-3-5,7
+    write /dev/cpuset/background/cpus 0-1
+    write /dev/cpuset/system-background/cpus 0-3
+    write /dev/cpuset/restricted/cpus 0-3
 
     # HardwareInfo needs to be able to read display info
     chmod 444 /sys/devices/platform/soc/soc:qcom,dsi-display/panel_info/panel0/serial_number
@@ -597,12 +649,12 @@ service vendor.ssr_setup /vendor/bin/ssr_setup
 on property:persist.vendor.sys.ssr.restart_level=*
     start vendor.ssr_setup
 
-on post-fs-data && property:persist.vendor.sys.ssr.enable_ramdumps=1 && property:vendor.skip.init=0
-    write /sys/module/subsystem_restart/parameters/enable_ramdumps 1
-    mkdir /data/vendor/wifidump 771 root system
-    mkdir /data/vendor/ramdump 771 root system
-    mkdir /data/vendor/ssrdump 771 root system
-    mkdir /data/vendor/ssrlog  775 root system
+on post-fs-data && property:persist.vendor.sys.ssr.enable_ramdumps=0 && property:vendor.skip.init=0
+    write /sys/module/subsystem_restart/parameters/enable_ramdumps 0
+    mkdir /data/vendor/wifidump 000 root system
+    mkdir /data/vendor/ramdump 000 root system
+    mkdir /data/vendor/ssrdump 000 root system
+    mkdir /data/vendor/ssrlog 000 root system
     start vendor.ss_ramdump
     start vendor.crash_event_logger
 

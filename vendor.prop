@@ -5,3 +5,7 @@ media.mediadrmservice.enable=true
 # Graphics
 ro.hardware.egl=adreno
 ro.hardware.vulkan=adreno
+
+# HWUI Add comment More actions
+debug.hwui.use_hint_manager=true
+debug.hwui.target_cpu_time_percent=30
