@@ -1,0 +1,6 @@
+# Infinity X prop
+ro.product.marketname=Google Pixel 4a
+ro.infinity.soc=Snapdragon 730G
+ro.infinity.battery=3140 mAh
+ro.infinity.display=1080 x 2340, 60 Hz
+ro.infinity.camera=12.2MP (rear) + 8MP (front)

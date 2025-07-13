@@ -1,0 +1,9 @@
+# Copyright (C) 2025 Infinity-X Project
+#
+# Flags for Infinity-X
+INFINITY_BUILD_TYPE := UNOFFICIAL
+INFINITY_MAINTAINER := RoshanGP4A
+TARGET_SUPPORTS_BLUR := true
+WITH_GAPPS := true
+TARGET_SHIPS_FULL_GAPPS := true
+TARGET_SHIPS_GOOGLE_DIALER := true
