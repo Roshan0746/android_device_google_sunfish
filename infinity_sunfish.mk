@@ -56,13 +56,13 @@ PRODUCT_BUILD_SUPER_PARTITION := false
 # PRODUCT_RESTRICT_VENDOR_FILES := all
 
 # Inherit some common aosp stuff.
-$(call inherit-product, vendor/aosp/config/common_full_phone.mk)
+$(call inherit-product, vendor/infinity/config/common_full_phone.mk)
 
 include device/google/sunfish/device-aosp.mk
 
 PRODUCT_MANUFACTURER := Google
 PRODUCT_BRAND := google
-PRODUCT_NAME := aosp_sunfish
+PRODUCT_NAME := infinity_sunfish
 PRODUCT_DEVICE := sunfish
 PRODUCT_MODEL := Pixel 4a
 
