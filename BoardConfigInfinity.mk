@@ -21,7 +21,7 @@ AB_OTA_PARTITIONS += \
 BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
 
 # Reserve space for gapps install
--include vendor/aosp/config/BoardConfigReservedSize.mk
+-include vendor/infinity/config/BoardConfigReservedSize.mk
 
 # SELinux
 BOARD_SEPOLICY_DIRS += device/google/sunfish/sepolicy-lineage/dynamic
@@ -31,3 +31,7 @@ BOARD_SEPOLICY_DIRS += device/google/sunfish/sepolicy-lineage/vendor
 BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 3
 
 include vendor/google/sunfish/BoardConfigVendor.mk
+
+# Props
+DEVICE_PATH := device/google/sunfish
+TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop

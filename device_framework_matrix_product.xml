@@ -1,4 +1,21 @@
 <compatibility-matrix version="1.0" type="framework">
+   <hal format="hidl">
+    <name>android.hardware.health.storage</name>
+    <version>1.0</version>
+    <interface>
+        <name>IStorage</name>
+        <instance>default</instance>
+    </interface>
+</hal>
+
+<hal format="hidl">
+    <name>android.hardware.power.stats</name>
+    <version>1.0</version>
+    <interface>
+        <name>IPowerStats</name>
+        <instance>default</instance>
+    </interface>
+</hal>
    <hal format="hidl" optional="true">
        <name>com.qualcomm.qti.imscmservice</name>
        <version>2.2</version>

@@ -71,12 +71,22 @@ TARGET_SCREEN_HEIGHT := 2340
 TARGET_SCREEN_WIDTH := 1080
 TARGET_BOOT_ANIMATION_RES := 1080
 
-# Flags for Infinity-X
+# Whether you are compiling being an OFFICIAL Maintainer:
 INFINITY_BUILD_TYPE := UNOFFICIAL
-INFINITY_MAINTAINER := RoshanGP4A
+
+# Maintainer Name
+INFINITY_MAINTAINER := khaliq
+
+# Whether the package includes System BLURS
 TARGET_SUPPORTS_BLUR := true
+
+# Whether the compiled package ships Google Apps:
 WITH_GAPPS := true
+
+# Whether the compiled package ships more (mostly unimportant) Google Apps:
 TARGET_SHIPS_FULL_GAPPS := true
+
+# Whether the compiled shipped gapps package uses Google Dialer:
 TARGET_SHIPS_GOOGLE_DIALER := true
 
 PRODUCT_BUILD_PROP_OVERRIDES += \
