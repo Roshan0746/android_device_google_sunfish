@@ -37,7 +37,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_product.mk)
 #
 # All components inherited here go to vendor image
 #
-# TODO(b/136525499): move *_vendor.mk into the vendor makefile later
+#
 TARGET_SUPPORTS_OMX_SERVICE := false
 $(call inherit-product, $(SRC_TARGET_DIR)/product/handheld_vendor.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/telephony_vendor.mk)
@@ -63,3 +63,19 @@ PRODUCT_BRAND := Android
 PRODUCT_NAME := aosp_sunfish
 PRODUCT_DEVICE := sunfish
 PRODUCT_MODEL := AOSP on sunfish
+PRODUCT_MODEL := Pixel 4a
+
+# Boot animation
+TARGET_SCREEN_HEIGHT := 2340
+TARGET_SCREEN_WIDTH := 1080
+TARGET_BOOT_ANIMATION_RES := 1080
+
+# flags
+
+
+PRODUCT_BUILD_PROP_OVERRIDES += \
+    BuildDesc="sunfish-user 13 TQ3A.230805.001.S1 10786265 release-keys" \
+    BuildFingerprint=google/sunfish/sunfish:13/TQ3A.230805.001.S1/10786265:user/release-keys \
+    DeviceProduct=sunfish
+
+$(call inherit-product, vendor/google/sunfish/sunfish-vendor.mk)
